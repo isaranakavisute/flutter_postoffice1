@@ -10,7 +10,7 @@ class ServiceApi {
       required String postcode,
       required String macaddress}) async {
     //final url = Uri.http('pus2.thailandpost.com', 'que/qprint');
-    final url = Uri.http('localhost:8080', 'mock');
+    final url = Uri.http('192.168.1.37:8080', 'mock');
     //http://localhost:8080/mock
     final response = await http.post(url, body: {
       'typ': queuetype,
