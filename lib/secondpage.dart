@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:postoffice_queuesystem/takepicture.dart';
-//import 'package:postoffice_queuesystem/services/serviceApi.dart';
 import 'package:postoffice_queuesystem/services/serviceApi.dart';
 import 'package:postoffice_queuesystem/models/queue.dart';
 import 'dart:io';
@@ -19,7 +18,6 @@ class _Secondpage extends State<Secondpage> {
   void initState() {
     super.initState();
     setState(() {
-      //getQueueNumber(queuetype: 'normal', postcode: '99999', macaddress: 'AABBCCDDEEFF');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         getQueueNumber(
             queuetype: 'normal', postcode: '99999', macaddress: 'AABBCCDDEEFF');
