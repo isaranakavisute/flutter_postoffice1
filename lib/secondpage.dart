@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:postoffice_queuesystem/takepicture.dart';
 import 'package:postoffice_queuesystem/services/serviceApi.dart';
 import 'package:postoffice_queuesystem/models/queue.dart';
 import 'dart:io';
+//import 'package:mac_address/mac_address.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
+//import 'package:flutter/material.dart'
 
 class Secondpage extends StatefulWidget {
   const Secondpage({super.key});
@@ -29,6 +34,18 @@ class _Secondpage extends State<Secondpage> {
       {required String queuetype,
       required String postcode,
       required String macaddress}) async {
+    //get device mac address
+    //String platformVersion;
+    //try {
+    //macaddress = await GetMac.macAddress;
+    //} on PlatformException {}
+
+    //await Printing.layoutPdf(
+    //  onLayout: (PdfPageFormat format) async => await Printing.convertHtml(
+    //      format: format,
+    //     html: '<html><body><p>Hello!</p></body></html>',
+    //  ));
+
     final queue = await ServiceApi.getQueueNumber(
         queuetype: queuetype, postcode: postcode, macaddress: macaddress);
     setState(() {
@@ -158,59 +175,65 @@ class _Secondpage extends State<Secondpage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  /*
-                  child: SizedBox(
-                    width: size.width * 0.20,
-                    height: size.height * 0.20,
-                    child: Image.asset('assets/images/thp_logo.png'),
-                  ),
-                  */
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Takepicture()));
-                    },
-                    child: Container(
-                      height: size.height * 0.06,
-                      width: size.width * 0.25,
-                      //decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(0),
-                          color: Colors.blue),
-                      child: Center(
-                          child: Text(
-                        'ถ่ายรูปแล้ว',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      )),
+                Expanded(
+                  flex: 5,
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    //flex: 5,
+                    height: size.height * 0.12,
+                    width: double.infinity,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Takepicture()));
+                      },
+                      child: Container(
+                        //height: size.height * 0.06,
+                        //width: size.width * 0.40,
+                        //width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(0),
+                            color: Colors.blue),
+                        child: Center(
+                            child: Text(
+                          'ถ่ายรูปแล้ว',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        )),
+                      ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      height: size.height * 0.06,
-                      width: size.width * 0.25,
-                      //decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(0),
-                          color: Colors.blue),
-                      child: Center(
-                          child: Text(
-                        'พิมพ์บัตรคิว',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      )),
+                Expanded(
+                  flex: 5,
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    //flex: 5,
+                    height: size.height * 0.12,
+                    width: double.infinity,
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        //height: size.height * 0.06,
+                        //width: size.width * 0.40,
+                        //width: double.infinity,
+                        //decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(0),
+                            color: Colors.blue),
+                        child: Center(
+                            child: Text(
+                          'พิมพ์บัตรคิว',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        )),
+                      ),
                     ),
                   ),
                 ),
