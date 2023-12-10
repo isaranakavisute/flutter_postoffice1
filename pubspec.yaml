@@ -51,6 +51,7 @@ dependencies:
   webview_flutter: ^4.4.1
   device_info_plus: ^9.1.0
   provider: ^6.0.5
+  #flutter_webview_plugin: any
 
   #สำหรับใช้ติดต่อกับ api เพื่อส่ง รีเควส และรับค่าจาก api
   http: ^1.1.0
@@ -60,9 +61,12 @@ dependencies:
   #สำหรับรันสร้างโมเดล คำสั่งที่ใช้สร้างคือ ---->  flutter pub run build_runner build --delete-conflicting-outputs
   build_runner: ^2.1.11
   json_serializable: ^6.3.1
+  json_annotation: ^4.8.1
   #get_mac: ^0.0.1
   printing: ^5.11.0
   pdf: any
+  qr_flutter: ^4.1.0
+  screenshot: ^2.1.0
 
 dev_dependencies:
   flutter_test:

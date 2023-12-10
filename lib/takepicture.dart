@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:postoffice_queuesystem/secondpage.dart';
-
+import 'package:barcode_scan2/barcode_scan2.dart';
 
 class Takepicture extends StatefulWidget {
   const Takepicture({super.key});
@@ -11,15 +11,23 @@ class Takepicture extends StatefulWidget {
 }
 
 class _Takepicture extends State<Takepicture> {
+  String barcode = "";
+
+  Future scan() async {
+    ScanResult _barcode = await BarcodeScanner.scan();
+    setState(() {
+      barcode = _barcode.rawContent;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    scan();
     //print(size)
     return Scaffold(
       backgroundColor: Colors.white,
-      body:
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,25 +57,28 @@ class _Takepicture extends State<Takepicture> {
               height: size.height * 0.05,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child:
-                GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: size.height * 0.4,
-                  width: size.width * 0.6,
-                  //decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(0), color: Colors.grey),
-                  child: Center(
-                      child: Text(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      height: size.height * 0.4,
+                      width: size.width * 0.6,
+                      //decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(0),
+                          color: Colors.grey),
+                      child: Center(
+                          child: Text(
                         'ภาพจาก Webcam',
-                        style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
                       )),
-                ),
-              ),
-             )
-            ),
+                    ),
+                  ),
+                )),
             SizedBox(
               height: size.height * 0.05,
             ),
@@ -77,15 +88,14 @@ class _Takepicture extends State<Takepicture> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('กรุณาแสดง QR Code ที่กล้อง Webcam',style: TextStyle(fontSize: 10,color: Colors.green))
+                  Text('กรุณาแสดง QR Code ที่กล้อง Webcam',
+                      style: TextStyle(fontSize: 10, color: Colors.green))
                 ],
               ),
             ),
             SizedBox(
               height: size.height * 0.08,
             ),
-
-
 
             /*
             Padding(
@@ -109,7 +119,6 @@ class _Takepicture extends State<Takepicture> {
             ),
             */
 
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -117,18 +126,26 @@ class _Takepicture extends State<Takepicture> {
                   padding: EdgeInsets.all(8.0),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Secondpage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Secondpage()));
                     },
                     child: Container(
                       height: size.height * 0.06,
                       width: size.width * 0.25,
                       //decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blue),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(0), color: Colors.blue),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(0),
+                          color: Colors.blue),
                       child: Center(
                           child: Text(
-                            'ย้อนกลับ',
-                            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                          )),
+                        'ย้อนกลับ',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      )),
                     ),
                   ),
                 ),
@@ -144,7 +161,6 @@ class _Takepicture extends State<Takepicture> {
                 */
               ],
             ),
-
           ],
         ),
       ),
@@ -172,9 +188,6 @@ class _Takepicture extends State<Takepicture> {
         ),
       ),
       */
-
-      
     );
   }
 }
-

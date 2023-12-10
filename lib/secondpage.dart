@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:postoffice_queuesystem/takepicture.dart';
@@ -7,6 +9,8 @@ import 'dart:io';
 //import 'package:mac_address/mac_address.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
+import 'package:postoffice_queuesystem/scanner.dart';
+
 //import 'package:flutter/material.dart'
 
 class Secondpage extends StatefulWidget {
@@ -43,11 +47,17 @@ class _Secondpage extends State<Secondpage> {
     //await Printing.layoutPdf(
     //  onLayout: (PdfPageFormat format) async => await Printing.convertHtml(
     //      format: format,
-    //     html: '<html><body><p>Hello!</p></body></html>',
-    //  ));
+    //    html: '<html><body><p>Hello!</p></body></html>',
+    // ));
 
     final queue = await ServiceApi.getQueueNumber(
         queuetype: queuetype, postcode: postcode, macaddress: macaddress);
+
+    final _postalDetail =
+        await ServiceApi.getPostalDetailById(qrcode_id: "EF194701965TH");
+    //print(_postalDetail.fr_address);
+    //inspect(_postalDetail.fr_address);
+
     setState(() {
       queuenumber = queue.qreceipt;
     });
@@ -92,13 +102,8 @@ class _Secondpage extends State<Secondpage> {
                 ),
             Padding(
                 padding: EdgeInsets.all(1.0),
-                child: /*SizedBox(
-                width: size.width * 0.20,
-                height: size.height * 0.20,
-                child: Text('120'),
-                */
-                    Text(queuenumber.toString(),
-                        style: TextStyle(fontSize: 100, color: Colors.blue))
+                child: Text(queuenumber.toString(),
+                    style: TextStyle(fontSize: 100, color: Colors.blue))
                 //),
                 ),
             Padding(
@@ -116,7 +121,7 @@ class _Secondpage extends State<Secondpage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('ร่วมรัักษาโลกโดยการไม่พิมพ์กระดาษ',
+                  Text('ร่วมรักษาโลกโดยการไม่พิมพ์กระดาษ',
                       style: TextStyle(fontSize: 10, color: Colors.green)),
                   Text('โปรดใช้โทรศัพท์มือถือถ่ายรูปเลขคิวของท่าน',
                       style: TextStyle(fontSize: 10, color: Colors.green))
@@ -187,7 +192,8 @@ class _Secondpage extends State<Secondpage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Takepicture()));
+                                builder: (context) =>
+                                    Scanner() /*Takepicture()*/));
                       },
                       child: Container(
                         //height: size.height * 0.06,
