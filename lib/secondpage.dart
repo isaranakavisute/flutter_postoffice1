@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:postoffice_queuesystem/takepicture.dart';
 import 'package:postoffice_queuesystem/services/serviceApi.dart';
 import 'package:postoffice_queuesystem/models/queue.dart';
@@ -10,6 +11,9 @@ import 'dart:io';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:postoffice_queuesystem/scanner.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 //import 'package:flutter/material.dart'
 
@@ -22,6 +26,7 @@ class Secondpage extends StatefulWidget {
 
 class _Secondpage extends State<Secondpage> {
   int? queuenumber = 0;
+  ScreenshotController screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -63,6 +68,38 @@ class _Secondpage extends State<Secondpage> {
     });
   }
 
+  Future<void> PrintCapturedWidget(Uint8List capturedImage) async {
+    final doc = pw.Document();
+    final directory = (await getApplicationDocumentsDirectory()).path;
+
+    File myfile = File('${directory}/qr.png');
+    final Uint8List byteList = await myfile.readAsBytes();
+    doc.addPage(pw.Page(
+        /*pageFormat:
+            const PdfPageFormat(58 * PdfPageFormat.mm, 58 * PdfPageFormat.mm),*/
+        margin: const pw.EdgeInsets.only(top: 0, bottom: 0, left: 0, right: 0),
+        build: (pw.Context context) {
+          return pw.Center(
+              //child: pw.Image(pw.MemoryImage(byteList), fit: pw.BoxFit.cover));
+              child: pw.Image(pw.MemoryImage(byteList)));
+
+          /*
+          return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                pw.Padding(
+                    padding: pw.EdgeInsets.only(left: 100.0),
+                    child: pw.Image(pw.MemoryImage(byteList),
+                        alignment: pw.Alignment.center))
+              ]);
+          */
+        }));
+
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => doc.save());
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -96,16 +133,21 @@ class _Secondpage extends State<Secondpage> {
             SizedBox(
               height: size.height * 0.05,
             ),
-            Padding(
-                padding: EdgeInsets.all(8.0), child: Text('หมายเลขคิวของท่าน')
-                //),
-                ),
-            Padding(
-                padding: EdgeInsets.all(1.0),
-                child: Text(queuenumber.toString(),
-                    style: TextStyle(fontSize: 100, color: Colors.blue))
-                //),
-                ),
+            Screenshot(
+              controller: screenshotController,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('หมายเลขคิวของท่าน')),
+                    Padding(
+                        padding: EdgeInsets.all(1.0),
+                        child: Text(queuenumber.toString(),
+                            style:
+                                TextStyle(fontSize: 100, color: Colors.blue))),
+                  ]),
+            ),
             Padding(
                 padding: EdgeInsets.all(1.0),
                 child: SizedBox(
@@ -222,7 +264,24 @@ class _Secondpage extends State<Secondpage> {
                     height: size.height * 0.12,
                     width: double.infinity,
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        final directory =
+                            (await getApplicationDocumentsDirectory()).path;
+                        screenshotController.captureAndSave(directory,
+                            fileName: "qr.png");
+
+                        screenshotController
+                            .capture(delay: Duration(milliseconds: 10))
+                            .then((capturedImage) async {
+                          final directory =
+                              await getApplicationDocumentsDirectory();
+                          final imagePath =
+                              await File('${directory.path}/image.png')
+                                  .create();
+                          await imagePath.writeAsBytes(capturedImage!);
+                          PrintCapturedWidget(capturedImage!);
+                        });
+                      },
                       child: Container(
                         //height: size.height * 0.06,
                         //width: size.width * 0.40,
