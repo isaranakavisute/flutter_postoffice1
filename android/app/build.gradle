@@ -74,5 +74,8 @@ dependencies {
     implementation files('/Users/isaranakavisute/AndroidStudioProjects/postoffice_queuesystem/android/libs/printer-lib-2.1.2.aar')
     implementation files('/Users/isaranakavisute/AndroidStudioProjects/postoffice_queuesystem/android/libs/ePOS2.jar')
     implementation files('/Users/isaranakavisute/AndroidStudioProjects/postoffice_queuesystem/android/libs/ePOSEasySelect.jar')
+    implementation files('/Users/isaranakavisute/AndroidStudioProjects/postoffice_queuesystem/android/libs/lzo_V1.0.jar')
+    implementation files('/Users/isaranakavisute/AndroidStudioProjects/postoffice_queuesystem/android/libs/TSPL_V1.21.jar')
+    implementation files('/Users/isaranakavisute/AndroidStudioProjects/postoffice_queuesystem/android/libs/ZPL_V1.11.jar')
 
 }

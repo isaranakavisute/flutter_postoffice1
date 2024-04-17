@@ -672,9 +672,9 @@ class MainActivity: FlutterActivity(), View.OnClickListener , ReceiveListener
 
 
       context = getApplicationContext()
-      Toast.makeText(context,envVar, Toast.LENGTH_SHORT).show()
+      //Toast.makeText(context,envVar, Toast.LENGTH_SHORT).show()
 
-      return
+      //return
 
       val externalFilesDir = context.getExternalFilesDir(DIRECTORY_DOWNLOADS)
       val options = BitmapFactory.Options()
