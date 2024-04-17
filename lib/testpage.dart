@@ -16,6 +16,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:postoffice_queuesystem/flutter_usb_printer.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:fluttertoast/fluttertoast.dart';
+
 class TestPage extends StatefulWidget {
   const TestPage({super.key});
 
@@ -25,6 +31,26 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   ScreenshotController screenshotController = ScreenshotController();
+  List<Map<String, dynamic>> devices = [];
+  List<Printer> printers = [];
+  FlutterUsbPrinter flutterUsbPrinter = FlutterUsbPrinter();
+  bool connected = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
+    //_getDevicelist();
+    //_buildList(devices);
+    //if (devices.isNotEmpty)
+    //_connect(int.parse(devices[0]['vendorId']),
+    //   int.parse(devices[0]['productId']));
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeRight,
+    //   DeviceOrientation.landscapeLeft,
+    // ]);
+  }
 
   @override
   dispose() {
@@ -37,11 +63,169 @@ class _TestPageState extends State<TestPage> {
     super.dispose();
   }
 
+  Future findPrinters() async {
+    //return await Printing.listPrinters();
+    //List<Printer> printers;
+    setState(() async {
+      printers = await Printing.listPrinters();
+    });
+  }
+
+  _getDevicelist() async {
+    List<Map<String, dynamic>> results = [];
+    results = await FlutterUsbPrinter.getUSBDeviceList();
+
+    //print(" length: ${results.length}");
+
+    setState(() {
+      devices = results;
+    });
+  }
+
+  _connect(int vendorId, int productId) async {
+    bool? returned = false;
+    try {
+      returned = await flutterUsbPrinter.connect(vendorId, productId);
+    } on PlatformException {
+      //response = 'Failed to get platform version.';
+    }
+    if (returned!) {
+      setState(() {
+        connected = true;
+      });
+    }
+  }
+
+  _print() async {
+    try {
+      _getDevicelist();
+      if (devices.isNotEmpty)
+        _connect(int.parse(devices[0]['vendorId']),
+            int.parse(devices[0]['productId']));
+
+      //findPrinters();
+      //printers[0]
+
+      final doc = pw.Document();
+      final directory = (await getApplicationDocumentsDirectory()).path;
+      File myfile = File('${directory}/qr.png');
+      final Uint8List byteList = await myfile.readAsBytes();
+
+      var data = Uint8List.fromList(
+          utf8.encode("This is a raw byte printer testing."));
+
+      //await flutterUsbPrinter.write(byteList);
+
+      await flutterUsbPrinter.write(data);
+
+      //Uint8List.fromList(utf8.encode(input));
+
+      // doc.addPage(pw.Page(
+      //     margin: const pw.EdgeInsets.only(top: 10),
+      //     build: (pw.Context context) {
+      //       return pw.Center(child: pw.Image(pw.MemoryImage(byteList)));
+      //     }));
+      // await Printing.layoutPdf(
+      //     onLayout: (PdfPageFormat format) async => doc.save());
+
+      // final res = await Printing.directPrintPdf(
+      //     printer: printers[0],
+      //     onLayout: (PdfPageFormat format) async => doc.save(),
+      //     usePrinterSettings: true);
+    } on PlatformException {}
+  }
+
+  print_via_sdk1() async {
+    //await flutterUsbPrinter.print_via_sdk();
+
+    final directory = (await getApplicationDocumentsDirectory()).path;
+    File myfile = File('${directory}/qr.jpg');
+    //Image myimage = Image.file(myfile);
+    final Uint8List byteList = await myfile.readAsBytes();
+    List<int> imageBytes = await myfile.readAsBytesSync();
+    var data = Uint8List.fromList(imageBytes);
+    String base64Image = base64Encode(imageBytes);
+    //final ByteData byteData = byteList.buffer.asByteData(); // ByteData
+    //final ByteData byteData = ByteData.sublistView(byteList);
+    //final ByteData byteData = myimage.
+    //final ByteData byteData = pw.MemoryImage(byteList);
+    //Image myimage = pw.Image(pw.MemoryImage(byteList));
+    final ByteData byteData = ByteData.view(byteList.buffer);
+
+    //await flutterUsbPrinter.print_via_sdk(byteData);
+    //await flutterUsbPrinter.print_via_sdk(byteList);
+    //await flutterUsbPrinter.print_via_sdk(data);
+    await flutterUsbPrinter.print_via_sdk1(base64Image);
+  }
+
+  print_via_sdk2() async {
+    //await flutterUsbPrinter.print_via_sdk();
+
+    final directory = (await getApplicationDocumentsDirectory()).path;
+    File myfile = File('${directory}/qr.jpg');
+    //Image myimage = Image.file(myfile);
+    final Uint8List byteList = await myfile.readAsBytes();
+    List<int> imageBytes = await myfile.readAsBytesSync();
+    var data = Uint8List.fromList(imageBytes);
+    String base64Image = base64Encode(imageBytes);
+    //final ByteData byteData = byteList.buffer.asByteData(); // ByteData
+    //final ByteData byteData = ByteData.sublistView(byteList);
+    //final ByteData byteData = myimage.
+    //final ByteData byteData = pw.MemoryImage(byteList);
+    //Image myimage = pw.Image(pw.MemoryImage(byteList));
+    final ByteData byteData = ByteData.view(byteList.buffer);
+
+    //await flutterUsbPrinter.print_via_sdk(byteData);
+    //await flutterUsbPrinter.print_via_sdk(byteList);
+    //await flutterUsbPrinter.print_via_sdk(data);
+    await flutterUsbPrinter.print_via_sdk2(base64Image);
+  }
+
+  print_via_sdk3() async {
+    //await flutterUsbPrinter.print_via_sdk();
+
+    final directory = (await getApplicationDocumentsDirectory()).path;
+    File myfile = File('${directory}/qr.jpg');
+    //Image myimage = Image.file(myfile);
+    final Uint8List byteList = await myfile.readAsBytes();
+    List<int> imageBytes = await myfile.readAsBytesSync();
+    var data = Uint8List.fromList(imageBytes);
+    String base64Image = base64Encode(imageBytes);
+    //final ByteData byteData = byteList.buffer.asByteData(); // ByteData
+    //final ByteData byteData = ByteData.sublistView(byteList);
+    //final ByteData byteData = myimage.
+    //final ByteData byteData = pw.MemoryImage(byteList);
+    //Image myimage = pw.Image(pw.MemoryImage(byteList));
+    final ByteData byteData = ByteData.view(byteList.buffer);
+
+    //await flutterUsbPrinter.print_via_sdk(byteData);
+    //await flutterUsbPrinter.print_via_sdk(byteList);
+    //await flutterUsbPrinter.print_via_sdk(data);
+    await flutterUsbPrinter.print_via_sdk3(base64Image);
+  }
+
+  List<Widget> _buildList(List<Map<String, dynamic>> devices) {
+    return devices
+        .map((device) => new ListTile(
+              onTap: () {
+                _connect(int.parse(device['vendorId']),
+                    int.parse(device['productId']));
+              },
+              leading: new Icon(Icons.usb),
+              title: new Text(
+                  device['manufacturer'] + "**" + device['productName']),
+              subtitle:
+                  new Text(device['vendorId'] + "**" + device['productId']),
+            ))
+        .toList();
+  }
+
   Future<void> PrintCapturedWidget(Uint8List capturedImage) async {
     final doc = pw.Document();
     final directory = (await getApplicationDocumentsDirectory()).path;
 
-    File myfile = File('${directory}/qr.png');
+    //File myfile = File('${directory}/qr.png');
+    File myfile = File('${directory}/qr.jpg');
     final Uint8List byteList = await myfile.readAsBytes();
     doc.addPage(pw.Page(
         //pageFormat: PdfPageFormat.a4,
@@ -404,7 +588,7 @@ class _TestPageState extends State<TestPage> {
                 child: Container(
                   child: Column(
                     children: [
-                      Row(
+                      /*Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SizedBox(
@@ -423,7 +607,7 @@ class _TestPageState extends State<TestPage> {
                                   child: Image.asset(
                                       'assets/images/thp_address.png')),
                             ),
-                          ]),
+                          ]),*/
                       Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -458,7 +642,7 @@ class _TestPageState extends State<TestPage> {
                                   right: 0.0),
                               child: SizedBox(
                                 width: size.width * 0.25,
-                                height: size.height * 0.05,
+                                height: size.height * 0.10,
                                 child: Container(
                                     decoration:
                                         BoxDecoration(border: Border.all()),
@@ -691,23 +875,42 @@ class _TestPageState extends State<TestPage> {
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    child: Text('Print It'),
+                    child: Text('Print Birch ใบเสร็จ',
+                        style: TextStyle(fontSize: 8)),
                     onPressed: () async {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Testpage2() /*Takepicture()*/));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             Testpage2() ));
 
-                      /*
+                      //_print();
+
                       final directory =
                           (await getApplicationDocumentsDirectory()).path;
 
-                      screenshotController.captureAndSave(directory,
-                          fileName: "qr.png");
+                      // screenshotController.captureAndSave(directory,
+                      //     fileName: "qr.png");
+
+                      await screenshotController.captureAndSave(directory,
+                          fileName: "qr.jpg");
+
+                      final externalStorageFolder =
+                          await getExternalStorageDirectory();
+
+                      // Fluttertoast.showToast(
+                      //     msg: externalStorageFolder!.path + "/Downloads",
+                      //     toastLength: Toast.LENGTH_LONG,
+                      //     fontSize: 20,
+                      //     backgroundColor: Colors.green);
+
+                      final public_directory =
+                          externalStorageFolder!.absolute.path + "/Download";
+                      await screenshotController
+                          .captureAndSave(public_directory, fileName: "qr.jpg");
 
                       screenshotController
                           .capture(delay: Duration(milliseconds: 10))
@@ -719,11 +922,118 @@ class _TestPageState extends State<TestPage> {
 
                         await imagePath.writeAsBytes(capturedImage!);
 
-                        PrintCapturedWidget(capturedImage!);
+                        //_print();
+                        //PrintCapturedWidget(capturedImage!);
+                        print_via_sdk1();
                       }).catchError((onError) {
                         print(onError);
                       });
-                      */
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text('Print Birch Label',
+                        style: TextStyle(fontSize: 8)),
+                    onPressed: () async {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             Testpage2() ));
+
+                      //_print();
+
+                      final directory =
+                          (await getApplicationDocumentsDirectory()).path;
+
+                      // screenshotController.captureAndSave(directory,
+                      //     fileName: "qr.png");
+
+                      await screenshotController.captureAndSave(directory,
+                          fileName: "qr.jpg");
+
+                      final externalStorageFolder =
+                          await getExternalStorageDirectory();
+
+                      // Fluttertoast.showToast(
+                      //     msg: externalStorageFolder!.path + "/Downloads",
+                      //     toastLength: Toast.LENGTH_LONG,
+                      //     fontSize: 20,
+                      //     backgroundColor: Colors.green);
+
+                      final public_directory =
+                          externalStorageFolder!.absolute.path + "/Download";
+                      await screenshotController
+                          .captureAndSave(public_directory, fileName: "qr.jpg");
+
+                      screenshotController
+                          .capture(delay: Duration(milliseconds: 10))
+                          .then((capturedImage) async {
+                        final directory =
+                            await getApplicationDocumentsDirectory();
+                        final imagePath =
+                            await File('${directory.path}/image.png').create();
+
+                        await imagePath.writeAsBytes(capturedImage!);
+
+                        //_print();
+                        //PrintCapturedWidget(capturedImage!);
+                        print_via_sdk2();
+                      }).catchError((onError) {
+                        print(onError);
+                      });
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text('Print Epson Receipt',
+                        style: TextStyle(fontSize: 8)),
+                    onPressed: () async {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             Testpage2() ));
+
+                      //_print();
+
+                      final directory =
+                          (await getApplicationDocumentsDirectory()).path;
+
+                      // screenshotController.captureAndSave(directory,
+                      //     fileName: "qr.png");
+
+                      await screenshotController.captureAndSave(directory,
+                          fileName: "qr.jpg");
+
+                      final externalStorageFolder =
+                          await getExternalStorageDirectory();
+
+                      // Fluttertoast.showToast(
+                      //     msg: externalStorageFolder!.path + "/Downloads",
+                      //     toastLength: Toast.LENGTH_LONG,
+                      //     fontSize: 20,
+                      //     backgroundColor: Colors.green);
+
+                      final public_directory =
+                          externalStorageFolder!.absolute.path + "/Download";
+                      await screenshotController
+                          .captureAndSave(public_directory, fileName: "qr.jpg");
+
+                      screenshotController
+                          .capture(delay: Duration(milliseconds: 10))
+                          .then((capturedImage) async {
+                        final directory =
+                            await getApplicationDocumentsDirectory();
+                        final imagePath =
+                            await File('${directory.path}/image.png').create();
+
+                        await imagePath.writeAsBytes(capturedImage!);
+
+                        //_print();
+                        //PrintCapturedWidget(capturedImage!);
+                        print_via_sdk3();
+                      }).catchError((onError) {
+                        print(onError);
+                      });
                     },
                   ),
                 ],
